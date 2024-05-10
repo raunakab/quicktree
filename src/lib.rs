@@ -214,18 +214,21 @@ struct InnerNode<V> {
     value: V,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NodeRef<'a, V> {
     pub parent_id: Option<Uuid>,
     pub child_ids: &'a TinyVec<[Uuid; SIZE]>,
     pub value: &'a V,
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct NodeMut<'a, V> {
     pub parent_id: Option<Uuid>,
     pub child_ids: &'a TinyVec<[Uuid; SIZE]>,
     pub value: &'a mut V,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct RemovedNode<V> {
     pub parent_id: Option<Uuid>,
     pub value: V,
