@@ -1,0 +1,16 @@
+[package]
+name = "qtree"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hashbrown = "0.14"
+thiserror = "1.0"
+
+[dependencies.tinyvec]
+version = "1.6"
+features = ["alloc", "tinyvec_macros"]
+
+[dependencies.uuid]
+version = "1.8.0"
+features = ["v4", "fast-rng"]

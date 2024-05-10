@@ -1,0 +1,6 @@
+# Imports
+group_imports = "StdExternalCrate"
+
+# Comments
+wrap_comments = true
+format_code_in_doc_comments = true
