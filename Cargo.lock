@@ -75,7 +75,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "qtree"
+name = "q2tree"
 version = "0.1.0"
 dependencies = [
  "hashbrown",
