@@ -66,20 +66,22 @@ impl<V> Tree<V> {
     }
 
     pub fn insert_with_id<F: FnOnce(Uuid) -> V>(&mut self, parent_id: Uuid, f: F) -> Option<Uuid> {
-        if self.contains(parent_id) {
-            let id = Uuid::new_v4();
-            let value = f(id);
-            self.nodes.insert(
-                id,
-                InnerNode {
-                    parent_id: Some(parent_id),
-                    child_ids: tiny_vec!([Uuid; SIZE]),
-                    value,
-                },
-            );
-            Some(id)
-        } else {
-            None
+        match self.nodes.get_mut(&parent_id) {
+            Some(parent_inner_node) => {
+                let id = Uuid::new_v4();
+                parent_inner_node.child_ids.push(id);
+                let value = f(id);
+                self.nodes.insert(
+                    id,
+                    InnerNode {
+                        parent_id: Some(parent_id),
+                        child_ids: tiny_vec!([Uuid; SIZE]),
+                        value,
+                    },
+                );
+                Some(id)
+            },
+            None => None,
         }
     }
 
