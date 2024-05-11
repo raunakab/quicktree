@@ -157,22 +157,16 @@ impl<V> Tree<V> {
     pub fn child_nodes_mut(&mut self, id: Uuid) -> Option<impl Iterator<Item = NodeMut<V>>> {
         match self.nodes.get(&id) {
             Some(inner_node) => {
-                let iter = inner_node
-                    .child_ids
-                    .clone()
-                    .into_iter()
-                    .map(|child_id| self.get_unchecked(child_id));
-                Some([].into_iter())
+                // let iter = inner_node
+                //     .child_ids
+                //     .clone()
+                //     .into_iter()
+                //     .map(|child_id| self.get_unchecked(child_id));
                 // Some(iter)
+                Some([].into_iter())
             }
             None => None,
         }
-        // self.nodes.get(&id).map(|inner_node| {
-        //     inner_node
-        //         .child_ids
-        //         .iter()
-        //         .map(|&child_id| self.get_mut_unchecked(child_id))
-        // })
     }
 
     // updates/deletes:
