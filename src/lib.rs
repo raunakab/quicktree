@@ -80,7 +80,7 @@ impl<V> Tree<V> {
                     },
                 );
                 Some(id)
-            },
+            }
             None => None,
         }
     }
