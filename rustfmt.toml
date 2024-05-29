@@ -1,5 +1,6 @@
 # Imports
 group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
 
 # Comments
 wrap_comments = true
