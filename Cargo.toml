@@ -2,6 +2,9 @@
 name = "q2tree"
 version = "0.1.0"
 edition = "2021"
+description = "A hashmap backed tree implementation"
+license = "MIT"
+keywords = ["tree", "ui", "dom"]
 
 [dependencies]
 hashbrown = "0.14"
