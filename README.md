@@ -2,21 +2,15 @@
   q2tree
 </h1>
 <div align="center">
-  A hashmap backed tree implementation.
-  Provides constant access to a node given its id.
-  Especially useful for UI DOMs.
-</div>
-<br />
-<div align="center">
   <a href="./LICENSE-MIT">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
   </a>
-
-  <!-- <a href="https://crates.io/crates/glyphon"><img src="https://img.shields.io/crates/v/glyphon.svg?label=glyphon" alt="crates.io"></a> -->
-  <!-- <a href="https://docs.rs/glyphon"><img src="https://docs.rs/glyphon/badge.svg" alt="docs.rs"></a> -->
-  <!-- <img src="https://img.shields.io/badge/min%20rust-1.60-green.svg" alt="Minimum Rust Version"> -->
-  <!-- <a href="https://github.com/grovesNL/glyphon/actions"><img src="https://github.com/grovesNL/glyphon/workflows/CI/badge.svg?branch=main" alt="Build Status" /></a> -->
 </div>
+<br/>
+
+A hashmap backed tree implementation.
+Provides constant access to a node given its id.
+Especially useful for UI DOMs.
 
 ## Implementation
 `q2tree` uses a map-based implementation of a tree.
