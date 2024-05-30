@@ -26,13 +26,6 @@ const SIZE: usize = 16;
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Id(pub usize);
 
-fn gen_id(id: &RefCell<Id>) -> Id {
-    let mut id = id.borrow_mut();
-    let new_id = Id(id.0 + 1);
-    *id = new_id;
-    new_id
-}
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tree<V> {
     current_id: RefCell<Id>,
@@ -327,4 +320,16 @@ pub struct NodeMut<'a, V> {
 pub struct RemovedNode<V> {
     pub parent_id: Option<Id>,
     pub value: V,
+}
+
+/// Get a reference to an id and increment it (through the [`RefCell`]
+/// abstraction).
+///
+/// This function will mutably update the value of the given id with the new id
+/// in-place. It will also return that newly incremented id for convenience.
+fn gen_id(id: &RefCell<Id>) -> Id {
+    let mut id = id.borrow_mut();
+    let new_id = Id(id.0.checked_add(1).unwrap());
+    *id = new_id;
+    new_id
 }
