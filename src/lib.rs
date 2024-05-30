@@ -1,18 +1,31 @@
+use std::cell::RefCell;
+
 use hashbrown::HashMap;
 use tinyvec::{tiny_vec, TinyVec};
-use uuid::Uuid;
 
 const SIZE: usize = 16;
 
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Id(pub usize);
+
+fn gen_id(id: &RefCell<Id>) -> Id {
+    let mut id = id.borrow_mut();
+    let new_id = Id(id.0 + 1);
+    *id = new_id;
+    new_id
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tree<V> {
-    root_id: Option<Uuid>,
-    nodes: HashMap<Uuid, InnerNode<V>>,
+    current_id: RefCell<Id>,
+    root_id: Option<Id>,
+    nodes: HashMap<Id, InnerNode<V>>,
 }
 
 impl<V> Default for Tree<V> {
     fn default() -> Self {
         Self {
+            current_id: RefCell::default(),
             root_id: None,
             nodes: HashMap::default(),
         }
@@ -22,7 +35,7 @@ impl<V> Default for Tree<V> {
 impl<V> Tree<V> {
     // checks:
 
-    pub fn contains(&self, id: Uuid) -> bool {
+    pub fn contains(&self, id: Id) -> bool {
         self.nodes.contains_key(&id)
     }
 
@@ -34,6 +47,7 @@ impl<V> Tree<V> {
 
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
+            current_id: RefCell::default(),
             root_id: None,
             nodes: HashMap::with_capacity(capacity),
         }
@@ -41,19 +55,19 @@ impl<V> Tree<V> {
 
     // insertions:
 
-    pub fn insert_root(&mut self, value: V) -> Uuid {
+    pub fn insert_root(&mut self, value: V) -> Id {
         self.insert_root_with_id(|_| value)
     }
 
-    pub fn insert_root_with_id<F: FnOnce(Uuid) -> V>(&mut self, f: F) -> Uuid {
+    pub fn insert_root_with_id<F: FnOnce(Id) -> V>(&mut self, f: F) -> Id {
         self.nodes.clear();
-        let id = Uuid::new_v4();
+        let id = gen_id(&self.current_id);
         let value = f(id);
         self.nodes.insert(
             id,
             InnerNode {
                 parent_id: None,
-                child_ids: tiny_vec!([Uuid; SIZE]),
+                child_ids: tiny_vec!([Id; SIZE]),
                 value,
             },
         );
@@ -61,21 +75,21 @@ impl<V> Tree<V> {
         id
     }
 
-    pub fn insert(&mut self, parent_id: Uuid, value: V) -> Option<Uuid> {
+    pub fn insert(&mut self, parent_id: Id, value: V) -> Option<Id> {
         self.insert_with_id(parent_id, |_| value)
     }
 
-    pub fn insert_with_id<F: FnOnce(Uuid) -> V>(&mut self, parent_id: Uuid, f: F) -> Option<Uuid> {
+    pub fn insert_with_id<F: FnOnce(Id) -> V>(&mut self, parent_id: Id, f: F) -> Option<Id> {
         match self.nodes.get_mut(&parent_id) {
             Some(parent_inner_node) => {
-                let id = Uuid::new_v4();
+                let id = gen_id(&self.current_id);
                 parent_inner_node.child_ids.push(id);
                 let value = f(id);
                 self.nodes.insert(
                     id,
                     InnerNode {
                         parent_id: Some(parent_id),
-                        child_ids: tiny_vec!([Uuid; SIZE]),
+                        child_ids: tiny_vec!([Id; SIZE]),
                         value,
                     },
                 );
@@ -87,7 +101,7 @@ impl<V> Tree<V> {
 
     // gets/sets:
 
-    pub fn get_root_id(&self) -> Option<Uuid> {
+    pub fn get_root_id(&self) -> Option<Id> {
         self.root_id
     }
 
@@ -99,7 +113,7 @@ impl<V> Tree<V> {
         self.root_id.map(|root_id| self.get_mut_unchecked(root_id))
     }
 
-    pub fn get(&self, id: Uuid) -> Option<NodeRef<V>> {
+    pub fn get(&self, id: Id) -> Option<NodeRef<V>> {
         self.nodes.get(&id).map(|inner_node| NodeRef {
             parent_id: inner_node.parent_id,
             child_ids: &inner_node.child_ids,
@@ -107,7 +121,7 @@ impl<V> Tree<V> {
         })
     }
 
-    pub fn get_mut(&mut self, id: Uuid) -> Option<NodeMut<V>> {
+    pub fn get_mut(&mut self, id: Id) -> Option<NodeMut<V>> {
         self.nodes.get_mut(&id).map(|inner_node| NodeMut {
             parent_id: inner_node.parent_id,
             child_ids: &inner_node.child_ids,
@@ -115,7 +129,7 @@ impl<V> Tree<V> {
         })
     }
 
-    pub fn get_unchecked(&self, id: Uuid) -> NodeRef<V> {
+    pub fn get_unchecked(&self, id: Id) -> NodeRef<V> {
         let inner_node = &self.nodes[&id];
         NodeRef {
             parent_id: inner_node.parent_id,
@@ -124,11 +138,11 @@ impl<V> Tree<V> {
         }
     }
 
-    fn get_mut_inner_unchecked(&mut self, id: Uuid) -> &mut InnerNode<V> {
+    fn get_mut_inner_unchecked(&mut self, id: Id) -> &mut InnerNode<V> {
         self.nodes.get_mut(&id).expect("...")
     }
 
-    pub fn get_mut_unchecked(&mut self, id: Uuid) -> NodeMut<V> {
+    pub fn get_mut_unchecked(&mut self, id: Id) -> NodeMut<V> {
         let inner_node = self.get_mut_inner_unchecked(id);
         NodeMut {
             parent_id: inner_node.parent_id,
@@ -137,7 +151,7 @@ impl<V> Tree<V> {
         }
     }
 
-    pub fn set(&mut self, id: Uuid, value: V) -> Option<V> {
+    pub fn set(&mut self, id: Id, value: V) -> Option<V> {
         self.nodes
             .get_mut(&id)
             .map(|inner_node| std::mem::replace(&mut inner_node.value, value))
@@ -145,11 +159,7 @@ impl<V> Tree<V> {
 
     // updates/deletes:
 
-    fn remove_inner_unchecked(&mut self, id: Uuid) -> InnerNode<V> {
-        self.nodes.remove(&id).expect("...")
-    }
-
-    pub fn extend(&mut self, parent_id: Uuid, mut other: Self) -> Result<(), Self> {
+    pub fn extend(&mut self, parent_id: Id, mut other: Self) -> Result<(), Self> {
         if self.contains(parent_id) {
             match (self.root_id, other.root_id) {
                 (_, None) => (),
@@ -168,7 +178,7 @@ impl<V> Tree<V> {
         }
     }
 
-    pub fn remove(&mut self, id: Uuid) -> Option<RemovedNode<V>> {
+    pub fn remove(&mut self, id: Id) -> Option<RemovedNode<V>> {
         match self.root_id {
             Some(root_id) if root_id == id => {
                 let root_inner_node = self.remove_inner_unchecked(root_id);
@@ -203,6 +213,10 @@ impl<V> Tree<V> {
         }
     }
 
+    fn remove_inner_unchecked(&mut self, id: Id) -> InnerNode<V> {
+        self.nodes.remove(&id).expect("...")
+    }
+
     pub fn clear(&mut self) {
         self.root_id = None;
         self.nodes.clear();
@@ -211,27 +225,27 @@ impl<V> Tree<V> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct InnerNode<V> {
-    parent_id: Option<Uuid>,
-    child_ids: TinyVec<[Uuid; SIZE]>,
+    parent_id: Option<Id>,
+    child_ids: TinyVec<[Id; SIZE]>,
     value: V,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NodeRef<'a, V> {
-    pub parent_id: Option<Uuid>,
-    pub child_ids: &'a TinyVec<[Uuid; SIZE]>,
+    pub parent_id: Option<Id>,
+    pub child_ids: &'a TinyVec<[Id; SIZE]>,
     pub value: &'a V,
 }
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct NodeMut<'a, V> {
-    pub parent_id: Option<Uuid>,
-    pub child_ids: &'a TinyVec<[Uuid; SIZE]>,
+    pub parent_id: Option<Id>,
+    pub child_ids: &'a TinyVec<[Id; SIZE]>,
     pub value: &'a mut V,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct RemovedNode<V> {
-    pub parent_id: Option<Uuid>,
+    pub parent_id: Option<Id>,
     pub value: V,
 }
