@@ -1,5 +1,5 @@
 <h1 align="center">
-  q2tree
+  quicktree
 </h1>
 <div align="center">
   <a href="./LICENSE-MIT">
@@ -13,7 +13,7 @@ Provides constant access to a node given its id.
 Especially useful for UI DOMs.
 
 ## Implementation
-`q2tree` uses a map-based implementation of a tree.
+`quicktree` uses a map-based implementation of a tree.
 Rather than the "naive" implementation of a tree in which each node contains a vector of child nodes, we instead store nodes in a map, indexable by an id.
 Each node then stores the *ids* of its children, rather than a pointer to its children directly.
 
@@ -24,7 +24,7 @@ This will be especially appealing for applications such as UI DOMs.
 
 ## Example
 ```rust
-use q2tree::Tree;
+use quicktree::Tree;
 
 let mut tree = Tree::<&'static str>::default();
 

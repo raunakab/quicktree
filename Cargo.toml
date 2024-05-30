@@ -1,5 +1,5 @@
 [package]
-name = "q2tree"
+name = "quicktree"
 version = "0.1.0"
 edition = "2021"
 description = "A hashmap backed tree implementation"
