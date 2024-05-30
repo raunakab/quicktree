@@ -16,8 +16,7 @@ macro_rules! tree_search {
     };
 }
 
-use std::cell::RefCell;
-use std::{collections::VecDeque, mem::replace};
+use std::{cell::RefCell, collections::VecDeque, mem::replace};
 
 use hashbrown::HashMap;
 use tinyvec::{tiny_vec, TinyVec};
