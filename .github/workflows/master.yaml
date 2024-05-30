@@ -16,4 +16,5 @@ jobs:
       - name: Test
         run: cargo test --verbose
       - name: Format
-        run: cargo +nightly fmt --verbose --check
+        # run: cargo +nightly fmt --verbose --check
+        run: cargo fmt --verbose --check
