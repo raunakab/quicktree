@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 macro_rules! tree_search {
     ($name:ident, $f:ident) => {
         pub fn $name(&self) -> impl Iterator<Item = NodeRef<V>> {
