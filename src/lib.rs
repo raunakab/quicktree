@@ -1,4 +1,23 @@
+macro_rules! tree_search {
+    ($name:ident, $f:ident) => {
+        pub fn $name(&self) -> impl Iterator<Item = NodeRef<V>> {
+            let mut todo = VecDeque::default();
+            if let Some(root_id) = self.root_id {
+                todo.push_front(root_id);
+            };
+            let mut nodes = vec![];
+            while let Some(id) = todo.$f() {
+                let node = self.get_unchecked(id);
+                todo.extend(node.child_ids);
+                nodes.push(node);
+            }
+            nodes.into_iter()
+        }
+    };
+}
+
 use std::cell::RefCell;
+use std::{collections::VecDeque, mem::replace};
 
 use hashbrown::HashMap;
 use tinyvec::{tiny_vec, TinyVec};
@@ -154,8 +173,69 @@ impl<V> Tree<V> {
     pub fn set(&mut self, id: Id, value: V) -> Option<V> {
         self.nodes
             .get_mut(&id)
-            .map(|inner_node| std::mem::replace(&mut inner_node.value, value))
+            .map(|inner_node| replace(&mut inner_node.value, value))
     }
+
+    // iters:
+
+    pub fn ids<'a>(&'a self) -> impl 'a + Iterator<Item = Id> {
+        self.nodes.keys().cloned()
+    }
+
+    pub fn nodes(&self) -> impl Iterator<Item = NodeRef<V>> {
+        self.nodes.values().map(|inner_node| NodeRef {
+            parent_id: inner_node.parent_id,
+            child_ids: &inner_node.child_ids,
+            value: &inner_node.value,
+        })
+    }
+
+    pub fn nodes_mut(&mut self) -> impl Iterator<Item = NodeMut<V>> {
+        self.nodes.values_mut().map(|inner_node| NodeMut {
+            parent_id: inner_node.parent_id,
+            child_ids: &inner_node.child_ids,
+            value: &mut inner_node.value,
+        })
+    }
+
+    pub fn child_nodes(&self, id: Id) -> Option<impl Iterator<Item = NodeRef<V>>> {
+        self.nodes.get(&id).map(|inner_node| {
+            inner_node
+                .child_ids
+                .iter()
+                .map(|&child_id| self.get_unchecked(child_id))
+        })
+    }
+
+    pub fn id_and_nodes(&self) -> impl Iterator<Item = (Id, NodeRef<V>)> {
+        self.nodes.iter().map(|(&id, inner_node)| {
+            (
+                id,
+                NodeRef {
+                    parent_id: inner_node.parent_id,
+                    child_ids: &inner_node.child_ids,
+                    value: &inner_node.value,
+                },
+            )
+        })
+    }
+
+    pub fn id_and_nodes_mut(&mut self) -> impl Iterator<Item = (Id, NodeMut<V>)> {
+        self.nodes.iter_mut().map(|(&id, inner_node)| {
+            (
+                id,
+                NodeMut {
+                    parent_id: inner_node.parent_id,
+                    child_ids: &inner_node.child_ids,
+                    value: &mut inner_node.value,
+                },
+            )
+        })
+    }
+
+    tree_search!(bfs, pop_front);
+
+    tree_search!(dfs, pop_back);
 
     // updates/deletes:
 
