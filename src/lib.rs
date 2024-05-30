@@ -322,10 +322,11 @@ pub struct RemovedNode<V> {
     pub value: V,
 }
 
-/// Get a reference to an id and increment it (through the [`RefCell`] abstraction).
+/// Get a reference to an id and increment it (through the [`RefCell`]
+/// abstraction).
 ///
-/// This function will mutably update the value of the given id with the new id in-place.
-/// It will also return that newly incremented id for convenience.
+/// This function will mutably update the value of the given id with the new id
+/// in-place. It will also return that newly incremented id for convenience.
 fn gen_id(id: &RefCell<Id>) -> Id {
     let mut id = id.borrow_mut();
     let new_id = Id(id.0.checked_add(1).unwrap());
