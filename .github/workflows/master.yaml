@@ -1,20 +1,28 @@
 name: Master
+
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
+
 env:
   CARGO_TERM_COLOR: always
+
 jobs:
   check-test-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Check
+      - name: Install latest nightly rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: false
+          components: rustfmt
+      - name: Assert project compiles
         run: cargo check --verbose
-      - name: Test
+      - name: Assert all tests pass
         run: cargo test --verbose
-      - name: Format
-        # run: cargo +nightly fmt --verbose --check
-        run: cargo fmt --verbose --check
+      - name: Assert formatting is valid
+        run: cargo +nightly fmt --verbose --check
