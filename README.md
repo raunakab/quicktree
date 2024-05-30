@@ -1,4 +1,13 @@
-# q2tree
+<h1 align="center">
+  q2tree
+</h1>
+<div align="center">
+  <a href="./LICENSE-MIT">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
+  </a>
+</div>
+<br/>
+
 A hashmap backed tree implementation.
 Provides constant access to a node given its id.
 Especially useful for UI DOMs.
@@ -7,11 +16,13 @@ Especially useful for UI DOMs.
 `q2tree` uses a map-based implementation of a tree.
 Rather than the "naive" implementation of a tree in which each node contains a vector of child nodes, we instead store nodes in a map, indexable by an id.
 Each node then stores the *ids* of its children, rather than a pointer to its children directly.
+
 The former implementation is essentially a generalized linked-list, and thus suffers from similar performance issues (e.g., poor CPU-cache localization, linear-time access).
 The latter instead offers constant time access to a node given its unique id.
-This is especially appealing for applications such as UI DOMs.
 
-# Example
+This will be especially appealing for applications such as UI DOMs.
+
+## Example
 ```rust
 use q2tree::Tree;
 
@@ -34,3 +45,6 @@ assert_eq!(*tree.get(child_1_id).unwrap().value, "world!");
 assert_eq!(*tree.get(child_2_id).unwrap().value, "there!");
 assert_eq!(tree.get(child_3_id), None);
 ```
+
+## License
+Licensed under the [MIT License](./LICENSE-MIT).
