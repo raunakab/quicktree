@@ -35,7 +35,7 @@ git = "https://github.com/raunakab/quicktree.git"
 
 #### Buck2
 Steve Klabnik has an amazing series of posts on how to [include third-party dependencies](https://steveklabnik.com/writing/using-cratesio-with-buck) (vendored or non-vendored) in your `buck2` project.
-This crate does *not* contain any build scripts, so you should be off and running quickly.
+This crate does *not* contain any build scripts, so you will not need to perform any additional configurations.
 
 #### Other
 You will need search up your specific build tool's docs in order to get up and running with `quicktree` in your project.
