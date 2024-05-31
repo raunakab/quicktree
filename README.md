@@ -52,6 +52,7 @@ Based off of some limited benches, we're seeing:
 | test | average time (microseconds) |
 |---|---|
 | Inserting 1000 children | 24.172 |
+| Inserting 1000 children and then removing the root | 24.724 |
 
 ## License
 Licensed under the [MIT License](./LICENSE-MIT).
