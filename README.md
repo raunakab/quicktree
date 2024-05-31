@@ -13,6 +13,7 @@ Provides constant access to a node given its id.
 Especially useful for UI DOMs.
 
 ## Implementation
+
 `quicktree` uses a map-based implementation of a tree.
 Rather than the "naive" implementation of a tree in which each node contains a vector of child nodes, we instead store nodes in a map, indexable by an id.
 Each node then stores the *ids* of its children, rather than a pointer to its children directly.
@@ -22,7 +23,25 @@ The latter instead offers constant time access to a node given its unique id.
 
 This will be especially appealing for applications such as UI DOMs.
 
+## Usage
+
+### `cargo`
+Add the following to your `Cargo.toml`:
+
+```toml
+[dependencies.quicktree]
+git = "https://github.com/raunakab/quicktree.git"
+```
+
+### `buck2`
+Steve Klabnik has an amazing series of posts on how to [include third-party dependencies](https://steveklabnik.com/writing/using-cratesio-with-buck) (vendored or non-vendored) in your `buck2` project.
+This crate does *not* contain any build scripts, so you should be off and running quickly.
+
+### Other
+You will need search up your specific build tool's docs in order to get up and running with `quicktree` in your project.
+
 ## Example
+
 ```rust
 use quicktree::Tree;
 
@@ -47,14 +66,15 @@ assert_eq!(tree.get(child_3_id), None);
 ```
 
 ## Performance
-Based off of some limited benches (on my desktop PC), the following metrics are being observed[^1]:
 
-| test | average time (microseconds) |
+Based off of some limited benches (on my desktop PC), the following metrics are being observed:
+
+| Test | Average Time \[microseconds\] |
 |---|---|
 | Inserting 1000 children | 24.172 |
 | Inserting 1000 children and then removing the root | 24.724 |
 
-[^1]: *These results are hardware specific and should not be used for comparisons!*
+Please note that these results are hardware specific, and *should not be used for comparisons against other implementations*!
 
 You can run these results yourself by cloning the repository and running:
 
@@ -63,4 +83,5 @@ cargo bench
 ```
 
 ## License
+
 Licensed under the [MIT License](./LICENSE-MIT).
