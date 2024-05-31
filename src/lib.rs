@@ -114,6 +114,10 @@ impl<V> Tree<V> {
 
     // gets/sets:
 
+    pub fn size(&self) -> usize {
+        self.nodes.len()
+    }
+
     pub fn get_root_id(&self) -> Option<Id> {
         self.root_id
     }
