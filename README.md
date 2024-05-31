@@ -25,7 +25,7 @@ This will be especially appealing for applications such as UI DOMs.
 
 ## Usage
 
-### `cargo`
+#### Cargo
 Add the following to your `Cargo.toml`:
 
 ```toml
@@ -33,11 +33,11 @@ Add the following to your `Cargo.toml`:
 git = "https://github.com/raunakab/quicktree.git"
 ```
 
-### `buck2`
+#### Buck2
 Steve Klabnik has an amazing series of posts on how to [include third-party dependencies](https://steveklabnik.com/writing/using-cratesio-with-buck) (vendored or non-vendored) in your `buck2` project.
 This crate does *not* contain any build scripts, so you should be off and running quickly.
 
-### Other
+#### Other
 You will need search up your specific build tool's docs in order to get up and running with `quicktree` in your project.
 
 ## Example
