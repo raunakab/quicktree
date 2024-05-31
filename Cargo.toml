@@ -13,3 +13,10 @@ thiserror = "1.0"
 [dependencies.tinyvec]
 version = "1.6"
 features = ["alloc", "tinyvec_macros"]
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "bench"
+harness = false
