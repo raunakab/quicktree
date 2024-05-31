@@ -65,9 +65,9 @@ assert_eq!(*tree.get(child_2_id).unwrap().value, "there!");
 assert_eq!(tree.get(child_3_id), None);
 ```
 
-## Performance
+## Benches
 
-Based off of some limited benches (on my desktop PC), the following metrics are being observed:
+Based off of some limited benchmarks (on my desktop PC), the following metrics are being observed:
 
 | Test | Average Time \[microseconds\] |
 |---|---|
