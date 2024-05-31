@@ -47,12 +47,20 @@ assert_eq!(tree.get(child_3_id), None);
 ```
 
 ## Performance
-Based off of some limited benches, we're seeing:
+Based off of some limited benches (on my desktop PC), the following metrics are being observed[^1]:
 
 | test | average time (microseconds) |
 |---|---|
 | Inserting 1000 children | 24.172 |
 | Inserting 1000 children and then removing the root | 24.724 |
+
+[^1]: *These results are hardware specific and should not be used for comparisons!*
+
+You can run these results yourself by cloning the repository and running:
+
+```sh
+cargo bench
+```
 
 ## License
 Licensed under the [MIT License](./LICENSE-MIT).
