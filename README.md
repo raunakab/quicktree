@@ -46,5 +46,12 @@ assert_eq!(*tree.get(child_2_id).unwrap().value, "there!");
 assert_eq!(tree.get(child_3_id), None);
 ```
 
+## Performance
+Based off of some limited benches, we're seeing:
+
+| test | average time (microseconds) |
+|---|---|
+| Inserting 1000 children | 24.172 |
+
 ## License
 Licensed under the [MIT License](./LICENSE-MIT).
