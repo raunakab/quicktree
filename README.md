@@ -75,7 +75,6 @@ Based off of some limited benches (on my desktop PC), the following metrics are 
 | Inserting 1000 children and then removing the root | 24.724 |
 
 Please note that these results are hardware specific, and *should not be used for comparisons against other implementations*!
-
 You can run these results yourself by cloning the repository and running:
 
 ```sh
